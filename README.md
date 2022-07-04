@@ -8,10 +8,10 @@ Starting from : June 30, 2022
 <p align="left">An Address Book built using MVC.</p>
 
 <p align="center">
-Last Updated : July 3, 2022
+Last Updated : July 4, 2022
 </p>
 <p align="center">
-v0.0.1.0
+v0.0.1.1
 </p>
 
 <p align="center">

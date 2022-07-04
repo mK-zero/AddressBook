@@ -1,4 +1,5 @@
 ﻿@model AddressBook.Models.Contact
+@inject AddressBook.Services.Interfaces.IImageService _imageService
 
 @{
     ViewData["Title"] = "Details";
@@ -10,6 +11,12 @@
     <h4>Contact</h4>
     <hr />
     <dl class="row">
+        <dt class = "col-sm-2">
+            Image
+        </dt>
+        <dd class = "col-sm-10">
+            <img class="img-fluid" src="@_imageService.ConvertByteArrayToFile(Model.ImageData, Model.ImageType)"/>
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
@@ -69,18 +76,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Created)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageData)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageData)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageType)
         </dd>
     </dl>
 </div>

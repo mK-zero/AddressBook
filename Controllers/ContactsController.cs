@@ -71,6 +71,7 @@ namespace AddressBook.Controllers
                     contact.ImageType = contact.ImageFile.ContentType;
                 }
 
+                contact.Created = DateTime.UtcNow;
                 _context.Add(contact);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -99,7 +100,7 @@ namespace AddressBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FirstName,LastName,Address1,Address2,City,State,Zip,Email,Phone,Created,ImageData,ImageType,Id")] Contact contact)
+        public async Task<IActionResult> Edit(int id, [Bind("FirstName,LastName,Address1,Address2,City,State,Zip,Email,Phone,Created,ImageData,ImageType,ImageFile,Id")] Contact contact)
         {
             if (id != contact.Id)
             {
@@ -108,6 +109,12 @@ namespace AddressBook.Controllers
 
             if (ModelState.IsValid)
             {
+                if (contact.ImageFile != null)
+                {
+                    contact.ImageData = await _imageService.ConvertFileToByteArrayAsync(contact.ImageFile);
+                    contact.ImageType = contact.ImageFile.ContentType;
+                }
+
                 try
                 {
                     _context.Update(contact);
