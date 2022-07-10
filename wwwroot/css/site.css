@@ -1,3 +1,10 @@
+:root {
+    --primary-color: #1d5888;
+    --secondary-color: #73b6fa;
+    --dark-color: #292929;
+    --white-color: #dff3e4;
+}
+
 html {
   font-size: 14px;
 }
@@ -14,5 +21,92 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: 'Cambria Math';
+}
+
+nav {
+    font-family: 'Cambria Math';
+}
+
+footer {
+    font-family: 'Cambria Math';
+}
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+
+div.dataTables_info {
+    color: black;
+    background-color: #bdc3c7;
+    border: groove;
+}
+
+div.dataTables_length {
+    background-color: #bdc3c7;
+    color: black;
+    border: groove;
+}
+
+div.dataTables_filter {
+    background-color: #bdc3c7;
+    color: black;
+    border: groove;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: black !important;
+    border: 1px solid white !important;
+    background-color: white !important;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #bdc3c7), color-stop(100%, #bdc3c7)) !important;
+    background: -webkit-linear-gradient(top, #bdc3c7 0%, #bdc3c7 100%) !important;
+    background: -moz-linear-gradient(top, #bdc3c7 0%, #bdc3c7 100%) !important;
+    background: -o-linear-gradient(top, #bdc3c7 0%, #bdc3c7 100%) !important;
+    background: linear-gradient(to bottom, #bdc3c7 0%, #bdc3c7 100%) !important;
+}
+
+main > .container {
+    padding: 60px 15px 0;
+    margin-bottom: 5rem;
+}
+
+.sticky-footer {
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+footer {
+    padding-right: 1rem;
+}
+
+    footer .social > a {
+        color: var(--white-color);
+        opacity: 0.75;
+    }
+
+        footer .social > a:hover {
+            opacity: 0.9;
+            color: var(--secondary-color);
+        }
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+    padding-right: 1rem;
+}
+
+code[class*="language-"],
+    pre[class*="language-"] {
+        white-space: pre-wrap;
+        word-break: break-all;
+        word-wrap: break-word;
 }

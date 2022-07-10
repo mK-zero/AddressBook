@@ -1,0 +1,694 @@
+﻿@{
+    ViewData["Title"] = "Code";
+}
+<!--<h1>@ViewData["Title"]</h1>-->
+
+<div class="container py-5 px-5 mt-5">
+            <h2 class="border-1 border-bottom border-dark">The Code for Address Book</h2>
+            <div class="row row-cols-1 row-cols-lg-2">
+
+
+                <!-- Code for ContactsController -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public class ContactsController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
+
+        public ContactsController(ApplicationDbContext context, IImageService imageService)
+        {
+            _context = context;
+            _imageService = imageService;
+        }
+
+        // GET: Contacts
+        public async Task<IActionResult> Index()
+        {
+            //return View(await _context.Contact.ToListAsync());
+            return _context.Contact != null ? 
+                        View(await _context.Contact.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.Contact'  is null.");
+        }
+
+        // GET: Contacts/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.Contact == null)
+            {
+                return NotFound();
+            }
+
+            var contact = await _context.Contact
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (contact == null)
+            {
+                return NotFound();
+            }
+
+            return View(contact);
+        }
+
+        // GET: Contacts/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Contacts/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("FirstName,LastName,Address1,Address2,City,State,Zip,Email,Phone,Created,ImageData,ImageType,ImageFile,Id")] Contact contact)
+        {
+            if (ModelState.IsValid)
+            {
+                if (contact.ImageFile != null)
+                {
+                    contact.ImageData = await _imageService.ConvertFileToByteArrayAsync(contact.ImageFile);
+                    contact.ImageType = contact.ImageFile.ContentType;
+                }
+
+                contact.Created = DateTime.UtcNow;
+                _context.Add(contact);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(contact);
+        }
+
+        // GET: Contacts/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.Contact == null)
+            {
+                return NotFound();
+            }
+
+            var contact = await _context.Contact.FindAsync(id);
+            if (contact == null)
+            {
+                return NotFound();
+            }
+            return View(contact);
+        }
+
+        // POST: Contacts/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("FirstName,LastName,Address1,Address2,City,State,Zip,Email,Phone,Created,ImageData,ImageType,ImageFile,Id")] Contact contact)
+        {
+            if (id != contact.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                if (contact.ImageFile != null)
+                {
+                    contact.ImageData = await _imageService.ConvertFileToByteArrayAsync(contact.ImageFile);
+                    contact.ImageType = contact.ImageFile.ContentType;
+                }
+
+                try
+                {
+                    _context.Update(contact);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ContactExists(contact.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(contact);
+        }
+
+        // GET: Contacts/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || _context.Contact == null)
+            {
+                return NotFound();
+            }
+
+            var contact = await _context.Contact
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (contact == null)
+            {
+                return NotFound();
+            }
+
+            return View(contact);
+        }
+
+        // POST: Contacts/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.Contact == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Contact'  is null.");
+            }
+            var contact = await _context.Contact.FindAsync(id);
+            if (contact != null)
+            {
+                _context.Contact.Remove(contact);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ContactExists(int id)
+        {
+          return (_context.Contact?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>ContactsController</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+                <!-- Code for HomeController -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public class HomeController : Controller
+    {
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Code()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>HomeController</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+                <!-- Code for InitialCreate -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public partial class InitialCreate : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Contact",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Address1 = table.Column<string>(type: "text", nullable: false),
+                    Address2 = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    State = table.Column<string>(type: "text", nullable: false),
+                    Zip = table.Column<int>(type: "integer", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ImageData = table.Column<byte[]>(type: "bytea", nullable: false),
+                    ImageType = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contact", x => x.Id);
+                });
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Contact");
+        }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>InitialCreate</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+                <!-- Code for Created -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public partial class Created : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<string>(
+                name: "State",
+                table: "Contact",
+                type: "text",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "text");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Phone",
+                table: "Contact",
+                type: "text",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "text");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ImageType",
+                table: "Contact",
+                type: "text",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "text");
+
+            migrationBuilder.AlterColumn<byte[]>(
+                name: "ImageData",
+                table: "Contact",
+                type: "bytea",
+                nullable: true,
+                oldClrType: typeof(byte[]),
+                oldType: "bytea");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Email",
+                table: "Contact",
+                type: "text",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "text");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "City",
+                table: "Contact",
+                type: "text",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "text");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Address2",
+                table: "Contact",
+                type: "text",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "text");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<string>(
+                name: "State",
+                table: "Contact",
+                type: "text",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "text",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Phone",
+                table: "Contact",
+                type: "text",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "text",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ImageType",
+                table: "Contact",
+                type: "text",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "text",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<byte[]>(
+                name: "ImageData",
+                table: "Contact",
+                type: "bytea",
+                nullable: false,
+                defaultValue: new byte[0],
+                oldClrType: typeof(byte[]),
+                oldType: "bytea",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Email",
+                table: "Contact",
+                type: "text",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "text",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "City",
+                table: "Contact",
+                type: "text",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "text",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Address2",
+                table: "Contact",
+                type: "text",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "text",
+                oldNullable: true);
+        }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>Created</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+
+                <!-- Code for ApplicationDbContextModelSnapshot -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+                        [DbContext(typeof(ApplicationDbContext))]
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("AddressBook.Models.Contact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address1")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Address2")
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("ImageData")
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("ImageType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<string>("State")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Zip")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Contact");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>ApplicationDbContextModelSnapshot</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+                <!-- Code for ApplicationDbContext -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+
+        }
+
+        public DbSet<AddressBook.Models.Contact>? Contact { get; set; }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>ApplicationDbContext</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+                <!-- Code for DataUtility -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public static class DataUtility
+    {
+        public static string GetConnectionString(IConfiguration configuration)
+        {
+            //The default connection string will come from appSettings
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            //It will be automatically overwritten if running on Heroku
+            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+            return string.IsNullOrEmpty(databaseUrl) ? connectionString : BuildConnectionString(databaseUrl);
+        }
+
+        public static string BuildConnectionString(string databaseUrl)
+        {
+            //Provides an object representation of a uniform resource identifier (URI)
+            var databaseUri = new Uri(databaseUrl);
+            var userInfo = databaseUri.UserInfo.Split(':');
+
+            //Provides a simple way to create and manage the contents of connnection strings
+            var builder = new NpgsqlConnectionStringBuilder
+            {
+                Host = databaseUri.Host,
+                Port = databaseUri.Port,
+                Username = userInfo[0],
+                Password = userInfo[1],
+                Database = databaseUri.LocalPath.TrimStart('/'),
+                SslMode = SslMode.Prefer,
+                TrustServerCertificate = true
+            };
+
+            return builder.ToString();
+        }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>DataUtility</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+                <!-- Code for Contact -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public class Contact
+    {
+        [Required]
+        [Display(Name = "First Name")]
+        public string? FirstName { get; set; }
+        
+        [Required]
+        [Display(Name = "Last Name")]
+        public string? LastName { get; set; }
+
+        [Required]
+        public string? Address1 { get; set; }
+        public string? Address2 { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+
+        [DataType(DataType.PostalCode)]
+        public int Zip { get; set; }
+
+        [DataType(DataType.EmailAddress)]
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+
+        public DateTime Created { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Image")]
+        [DataType(DataType.Upload)]
+        public IFormFile? ImageFile { get; set; }
+        public byte[]? ImageData { get; set; }
+        public string? ImageType { get; set; }
+
+        public int Id { get; set; }
+
+        [NotMapped]
+        public string FullName { get { return $"{FirstName} {LastName}"; } }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>Contact</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+                <!-- Code for IImageService -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public interface IImageService
+    {
+        public Task<byte[]> ConvertFileToByteArrayAsync(IFormFile file);
+        public string ConvertByteArrayToFile(byte[] fileData, string extension);
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>IImageService</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+                <!-- Code for BasicImageService -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public class BasicImageService : IImageService
+    {
+        public string ConvertByteArrayToFile(byte[] fileData, string extension)
+        {
+            if (fileData is null) return string.Empty;
+
+            string imageBase64Data = Convert.ToBase64String(fileData);
+            return $"data:{extension};base64,{imageBase64Data}";
+        }
+
+        public async Task<byte[]> ConvertFileToByteArrayAsync(IFormFile file)
+        {
+            using MemoryStream memoryStream = new();
+            await file.CopyToAsync(memoryStream);
+            byte[] byteFile = memoryStream.ToArray();
+
+            return byteFile;
+        }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>BasicImageService</h5>
+                    <p>
+                        
+                    </p>
+                </div>
+
+
+            </div>
+        </div>
+        <br />
